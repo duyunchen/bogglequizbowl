@@ -76,17 +76,18 @@ def list_players():
 # This checks user authentication info
 @app.route("/login", methods=["POST"])
 def checkLogin():
-    valid = LoginService.check_auth(request.form["username"].strip().lower(),
+    username = request.form["username"].strip().lower()
+    valid = LoginService.check_auth(username,
                        request.form["password"])
     if valid:
-        session["username"] = request.form["username"]
+        session["username"] = username
         return JsonService.jsonify({valid : True})
     else:
         return JsonService.jsonify({valid : False})
 
 @app.route("/updateHighscore", methods=["POST"])
 def updateHighscore():
-    username = request.form["username"]
+    username = request.form["username"].strip().lower()
     highscore = request.form["highscore"]
     
     player = PlayerService.get_player(username)
