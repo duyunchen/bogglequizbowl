@@ -76,7 +76,7 @@ def list_players():
 # This checks user authentication info
 @app.route("/login", methods=["POST"])
 def checkLogin():
-    valid = LoginService.check_auth(request.form["username"].strip(),
+    valid = LoginService.check_auth(request.form["username"].strip().lower(),
                        request.form["password"])
     if valid:
         session["username"] = request.form["username"]
