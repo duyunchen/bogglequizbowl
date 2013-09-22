@@ -48,8 +48,8 @@ def generate_ends_with_suffix(board, solutions, dict):
             solution = random.choice(solutions)
         correct = ["Yes"]
         suffix = solution.word[-3:]
-        justification = ["Wrong! %s ends with -%s!" % (solution.word, suffix), solution.path]
-        correctExample = ["Correct! E.g. " + solution.word + " ends in " + suffix, solution.path]
+        justification = ["Wrong! %s ends with -%s!" % (solution.word.upper(), suffix.upper()), solution.path]
+        correctExample = ["Correct! E.g. " + solution.word + " ends in " + suffix.upper(), solution.path]
     else:
         suffix = board.get_random_word(3)
         
@@ -57,10 +57,10 @@ def generate_ends_with_suffix(board, solutions, dict):
             suffix = board.get_random_word(3)
             
         correct = ["No"]
-        justification = "Wrong! No word here ends with -%s!" % suffix
+        justification = "Wrong! No word here ends with -%s!" % suffix.upper()
         correctExample = []
         
-    prompt = prompt % suffix
+    prompt = prompt % suffix.upper()
     
     return Question(board, prompt, answers, correct, justification, correctExample)
 
@@ -77,8 +77,8 @@ def generate_starts_with_prefix(board, solutions, dict):
             solution = random.choice(solutions)
         correct = ["Yes"]
         prefix = solution.word[0:3]
-        justification = ["Wrong! %s starts with %s-!" % (solution.word, prefix), solution.path]
-        correctExample = ["Correct! E.g. " + solution.word + " begins with " + prefix + "-", solution.path]
+        justification = ["Wrong! %s starts with %s-!" % (solution.word.upper(), prefix.upper()), solution.path]
+        correctExample = ["Correct! E.g. " + solution.word + " begins with " + prefix.upper() + "-", solution.path]
     else:
         prefix = board.get_random_word(3)
         
@@ -86,10 +86,10 @@ def generate_starts_with_prefix(board, solutions, dict):
             prefix = board.get_random_word(3)
             
         correct = ["No"]
-        justification = "Wrong! No word here starts with %s-!" % prefix
+        justification = "Wrong! No word here starts with %s-!" % prefix.upper()
         correctExample = []
 
-    prompt = prompt % prefix
+    prompt = prompt % prefix.upper()
     
     return Question(board, prompt, answers, correct, justification, correctExample)
     
@@ -102,7 +102,7 @@ def generate_is_word_on_board(board, solutions, dict):
     if is_correct:  # Generate a question with "Yes" answer (easy)
         correct = ["Yes"]
         solution = random.choice(solutions)
-        justification = ["Wrong! %s is on this board!" % solution.word, solution.path]
+        justification = ["Wrong! \"%s\" is on this board!" % solution.word.upper(), solution.path]
         correctExample = ["Correct!", solution.path]
     else:  # Generate a question with "No" answer
         word = random.choice(dict);
@@ -115,14 +115,14 @@ def generate_is_word_on_board(board, solutions, dict):
         s = _word_in_solutions(solutions, word)
         if s is not None:
             correct = ["Yes"]
-            justification = ["Wrong! %s is on this board!" % word, s.path]
+            justification = ["Wrong! \"%s\" is on this board!" % word.upper(), s.path]
             correctExample = ["Correct!", s.path]
         else:
             correct = ["No"]
-            justification = "Wrong! %s is not on this board!" % word
+            justification = "Wrong! \"%s\" is not on this board!" % word.upper()
             correctExample=[]
     
-    prompt = prompt % solution.word
+    prompt = prompt % solution.word.upper()
          
     return Question(board, prompt, answers, correct, justification, correctExample)
 

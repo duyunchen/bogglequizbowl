@@ -187,7 +187,6 @@ $(document).ready(function() {
         },
         updateTimer : function() {
         	if (this.time == 0) {
-        	    this.stopTimer();
         	    $("#prompt").text("Time is up! Your score is " + this.score);
         	    this.endGame();
         	    return;
@@ -222,7 +221,7 @@ $(document).ready(function() {
             			view.refreshTopbar();
             			highscoreView.fetchtable();
             			self.showStart();
-            			this.score = 0;
+            			self.score = 0;
                     },
                     error: function(xhr, status, error) {
         	    		handleError(xhr);
