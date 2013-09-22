@@ -135,6 +135,8 @@ $(document).ready(function() {
         	});
     	},
         login : function() {
+        	$("a#loginbutton").attr("class", "small disabled button").text("Loading..");
+        	$("a#guestbutton").remove();
         	var username = $("input#login_username").val();
         	var password = $("input#login_password").val();
         	self = this;
@@ -151,6 +153,8 @@ $(document).ready(function() {
         	});
         },
         guest : function() {
+        	$("a#loginbutton").attr("class", "small disabled button").text("Loading..");
+        	$("a#guestbutton").remove();
         	self = this;
         	Backbone.ajax({
         		type : "POST",
@@ -238,7 +242,7 @@ $(document).ready(function() {
         	if (correct) {
         		var score = Math.ceil(this.time / 100);
         		this.showCorrectExample(this.question.get("correctExample"));
-        		$("a.answer").remove();
+        		$("a.answer").attr("class", "large disabled button").text("Loading");
         		this.score += score;
         		this.updateTimer();
         		this.stopTimer();
