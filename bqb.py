@@ -56,7 +56,7 @@ def get_template():
 @app.route("/isLoggedIn", methods=["GET"])
 def is_logged_in():
     if "username" in session:
-        username = session.get("username")
+        username = session.get("username").strip()
         player = PlayerService.get_player(username)
         
         if not player: 
@@ -76,7 +76,7 @@ def list_players():
 # This checks user authentication info
 @app.route("/login", methods=["POST"])
 def checkLogin():
-    valid = LoginService.check_auth(request.form["username"],
+    valid = LoginService.check_auth(request.form["username"].strip(),
                        request.form["password"])
     if valid:
         session["username"] = request.form["username"]

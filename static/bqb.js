@@ -218,6 +218,7 @@ $(document).ready(function() {
             			view.refreshTopbar();
             			highscoreView.fetchtable();
             			self.showStart();
+            			this.score = 0;
                     },
                     error: function(xhr, status, error) {
         	    		handleError(xhr);
