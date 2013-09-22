@@ -7,13 +7,13 @@
 #     the Free Software Foundation, either version 3 of the License, or
 #     (at your option) any later version.
 # 
-#     Foobar is distributed in the hope that it will be useful,
+#     Boggle Quiz Bowl is distributed in the hope that it will be useful,
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
 # 
 #     You should have received a copy of the GNU General Public License
-#     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+#     along with Boggle Quiz Bowl.  If not, see <http://www.gnu.org/licenses/>.
 
 from Question import Question
 from Solution import Solution
@@ -126,7 +126,7 @@ def generate_ends_with_suffix(board, solutions, dict):
         correct = ["Yes"]
         suffix = solution.word[-3:]
         justification = ["Wrong! %s ends with -%s!" % (solution.word.upper(), suffix.upper()), solution.path]
-        correctExample = ["Correct! E.g. " + solution.word + " ends in " + suffix.upper(), solution.path]
+        correctExample = ["Correct! E.g. " + solution.word.upper() + " ends in " + suffix.upper(), solution.path]
     else:
         suffix = board.get_random_word(3)
         
@@ -155,7 +155,7 @@ def generate_starts_with_prefix(board, solutions, dict):
         correct = ["Yes"]
         prefix = solution.word[0:3]
         justification = ["Wrong! %s starts with %s-!" % (solution.word.upper(), prefix.upper()), solution.path]
-        correctExample = ["Correct! E.g. " + solution.word + " begins with " + prefix.upper() + "-", solution.path]
+        correctExample = ["Correct! E.g. " + solution.word.upper() + " begins with " + prefix.upper() + "-", solution.path]
     else:
         prefix = board.get_random_word(3)
         
