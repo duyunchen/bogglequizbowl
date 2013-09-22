@@ -29,12 +29,89 @@ def generate_question():
     board = BoardService.generate_board()
     solutions = SolverService.find_words(board)
     dict = FileService.read_dictionary()
-    generate = random.choice([generate_is_word_on_board, generate_starts_with_prefix, generate_ends_with_suffix])
+    generate = random.choice([generate_is_word_on_board, generate_starts_with_prefix, generate_ends_with_suffix, generate_front_hook, generate_back_hook])
     
     question = generate(board, solutions, dict)
     
     return question
 
+def generate_back_hook(board, solutions, dict):
+    is_correct = MathService.get_random_boolean()
+    answers = ["Yes", "No"]
+    prompt = "Does %s have a valid back hook?"
+    
+    solution = None
+    if is_correct:
+        correct = ["Yes"]
+        backhook = None
+        for a in solutions:
+            for b in solutions:
+                if len(b.word) == len(a.word) + 1 and b.word[:-1] == a.word:
+                    solution = a
+                    backhook = b
+                    break
+            else:
+                continue
+            break
+        
+        justification = ["Wrong! %s can be made from %s" % (backhook.word.upper(), solution.word.upper()), backhook.path]
+        correctExample = ["Correct! e.g. %s can be made from %s" % (backhook.word.upper(), solution.word.upper()), backhook.path]
+    else:
+        correct = ["No"]
+        for a in solutions:
+            for b in solutions:
+                if len(b.word) == len(a.word) + 1 and b.word[:-1] == a.word:
+                    break
+            else:
+                solution = a
+                break
+        
+        justification = "Wrong! %s has no back hook here!" % solution.word.upper()
+        correctExample = []
+        
+    prompt = prompt % solution.word.upper()
+    
+    return Question(board, prompt, answers, correct, justification, correctExample) 
+
+def generate_front_hook(board, solutions, dict):
+    is_correct = MathService.get_random_boolean()
+    answers = ["Yes", "No"]
+    prompt = "Does %s have a valid front hook?"
+    
+    solution = None
+    if is_correct:
+        correct = ["Yes"]
+        fronthook = None
+        for a in solutions:
+            for b in solutions:
+                if len(b.word) == len(a.word) + 1 and b.word[1:] == a.word:
+                    solution = a
+                    fronthook = b
+                    break
+            else:
+                continue
+            break
+        
+        justification = ["Wrong! %s can be made from %s" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
+        correctExample = ["Correct! e.g. %s can be made from %s" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
+    else:
+        correct = ["No"]
+        for a in solutions:
+            for b in solutions:
+                if len(b.word) == len(a.word) + 1 and b.word[1:] == a.word:
+                    break
+            else:
+                solution = a
+                break
+        
+        justification = "Wrong! %s has no front hook here!" % solution.word.upper()
+        correctExample = []
+        
+    prompt = prompt % solution.word.upper()
+    
+    return Question(board, prompt, answers, correct, justification, correctExample) 
+        
+        
 #Generate a "does this end with prefix" question
 def generate_ends_with_suffix(board, solutions, dict):
     solution = random.choice(solutions)
