@@ -116,10 +116,11 @@ def generate_is_word_on_board(board, solutions, dict):
         if s is not None:
             correct = ["Yes"]
             justification = ["Wrong! %s is on this board!" % word, s.path]
+            correctExample = ["Correct!", s.path]
         else:
             correct = ["No"]
             justification = "Wrong! %s is not on this board!" % word
-        correctExample=[]
+            correctExample=[]
     
     prompt = prompt % solution.word
          

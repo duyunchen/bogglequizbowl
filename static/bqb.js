@@ -232,8 +232,6 @@ $(document).ready(function() {
         	}
         },
         checkAnswer : function(ev) {
-        	this.stopTimer();
-        	
         	var answer = $(ev.currentTarget).attr("id");
         	var correct = $.inArray(answer, this.question.get("correct")) == 0;
         	
@@ -242,12 +240,15 @@ $(document).ready(function() {
         		this.showCorrectExample(this.question.get("correctExample"));
         		$("a.answer").remove();
         		this.score += score;
+        		this.updateTimer();
+        		this.stopTimer();
         		this.nextQuestion();
         	}
         	else {
         	    this.showJustification(this.question.get("justifications"));
         	    this.endGame();
         	}
+        	
         },
         showStart : function() {
         	$("#answers").empty().append($("<a>", {class:"large success button", id:"start"}).text("Start!"));
