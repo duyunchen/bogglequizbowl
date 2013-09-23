@@ -68,7 +68,7 @@ $(document).ready(function() {
     	        success : function(data) {
         	    	self.username = player.get("username");
         	    	self.highscore = player.get("highscore");
-        	    	if (self.username == "Guest") {
+        	    	if (self.username == "guest") {
         	    		self.highscore = "Not available";
         	    	}
             	    if (self.username) {
@@ -159,7 +159,7 @@ $(document).ready(function() {
         	Backbone.ajax({
         		type : "POST",
         		url : "login",
-        		data: { username: "Guest", password:"guestpassword"} ,
+        		data: { username: "guest", password:"guestpassword"} ,
                 success: function(data) {
         			self.checkLogin();
                 },
@@ -209,7 +209,7 @@ $(document).ready(function() {
         },
         endGame : function() {
         	this.stopTimer();
-        	if (view.username != "Guest" && this.score > view.highscore) {
+        	if (view.username != "guest" && this.score > view.highscore) {
         		$("#prompt").append("<br/><br/>NEW PERSONAL HIGH SCORE!");
         		$("#answers").empty().append("Sending score.. Please wait.");
         		var self = this;
