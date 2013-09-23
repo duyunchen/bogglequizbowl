@@ -45,6 +45,8 @@ def generate_back_hook(board, solutions, dict):
         correct = ["Yes"]
         backhook = None
         for a in solutions:
+            if len(a) < 4:
+                continue
             for b in solutions:
                 if len(b.word) == len(a.word) + 1 and b.word[:-1] == a.word:
                     solution = a
@@ -54,7 +56,7 @@ def generate_back_hook(board, solutions, dict):
                 continue
             break
         
-        justification = ["Wrong! %s can be made from %s" % (backhook.word.upper(), solution.word.upper()), backhook.path]
+        justification = ["Wrong! %s can be made from %s!" % (backhook.word.upper(), solution.word.upper()), backhook.path]
         correctExample = ["Correct! e.g. %s can be made from %s" % (backhook.word.upper(), solution.word.upper()), backhook.path]
     else:
         correct = ["No"]
@@ -83,6 +85,8 @@ def generate_front_hook(board, solutions, dict):
         correct = ["Yes"]
         fronthook = None
         for a in solutions:
+            if len(a) < 4:
+                continue
             for b in solutions:
                 if len(b.word) == len(a.word) + 1 and b.word[1:] == a.word:
                     solution = a
@@ -92,7 +96,7 @@ def generate_front_hook(board, solutions, dict):
                 continue
             break
         
-        justification = ["Wrong! %s can be made from %s" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
+        justification = ["Wrong! %s can be made from %s!" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
         correctExample = ["Correct! e.g. %s can be made from %s" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
     else:
         correct = ["No"]
@@ -126,11 +130,11 @@ def generate_ends_with_suffix(board, solutions, dict):
         correct = ["Yes"]
         suffix = solution.word[-3:]
         justification = ["Wrong! %s ends with -%s!" % (solution.word.upper(), suffix.upper()), solution.path]
-        correctExample = ["Correct! E.g. " + solution.word.upper() + " ends in " + suffix.upper(), solution.path]
+        correctExample = ["Correct! e.g. " + solution.word.upper() + " ends in " + suffix.upper(), solution.path]
     else:
         suffix = board.get_random_word(3)
         
-        while not _contains_vowel(suffix) or _suffix_in_solutions(solutions, suffix):
+        while not _is_cvc(suffix) or _suffix_in_solutions(solutions, suffix):
             suffix = board.get_random_word(3)
             
         correct = ["No"]
@@ -155,11 +159,11 @@ def generate_starts_with_prefix(board, solutions, dict):
         correct = ["Yes"]
         prefix = solution.word[0:3]
         justification = ["Wrong! %s starts with %s-!" % (solution.word.upper(), prefix.upper()), solution.path]
-        correctExample = ["Correct! E.g. " + solution.word.upper() + " begins with " + prefix.upper() + "-", solution.path]
+        correctExample = ["Correct! e.g. " + solution.word.upper() + " begins with " + prefix.upper() + "-", solution.path]
     else:
         prefix = board.get_random_word(3)
         
-        while not _contains_vowel(prefix) or _prefix_in_solutions(solutions, prefix):
+        while not _is_cvc(prefix) or _prefix_in_solutions(solutions, prefix):
             prefix = board.get_random_word(3)
             
         correct = ["No"]
@@ -203,6 +207,15 @@ def generate_is_word_on_board(board, solutions, dict):
          
     return Question(board, prompt, answers, correct, justification, correctExample)
 
+# Determines if a 3-letter word is a vowel sandwiched between consonants
+def _is_cvc(word):
+    if len(word) != 3:
+        return False
+    vowels = "aeiou"
+    if word[0] not in vowels and word[1] in vowels and word[2] not in vowels:
+        return True
+    return False
+    
 def _contains_vowel(word):
     vowels = "aeiou"
     return len(set(word).intersection(vowels)) > 0
