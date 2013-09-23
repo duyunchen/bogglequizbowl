@@ -35,7 +35,7 @@ def generate_question():
     
     return question
 
-def generate_back_hook(board, solutions, dict):
+def generate_back_hook(board, solutions, dictionary):
     is_correct = MathService.get_random_boolean()
     answers = ["Yes", "No"]
     prompt = "Does %s have a valid back hook?"
@@ -56,8 +56,11 @@ def generate_back_hook(board, solutions, dict):
                 continue
             break
         
-        justification = ["Wrong! %s can be made from %s!" % (backhook.word.upper(), solution.word.upper()), backhook.path]
-        correctExample = ["Correct! e.g. %s can be made from %s" % (backhook.word.upper(), solution.word.upper()), backhook.path]
+        if solution is not None:
+            justification = ["Wrong! %s can be made from %s!" % (backhook.word.upper(), solution.word.upper()), backhook.path]
+            correctExample = ["Correct! e.g. %s can be made from %s" % (backhook.word.upper(), solution.word.upper()), backhook.path]
+        else:
+            return generate_back_hook(board, solutions, dictionary)
     else:
         correct = ["No"]
         for a in solutions:
@@ -69,15 +72,18 @@ def generate_back_hook(board, solutions, dict):
             else:
                 solution = a
                 break
-        
-        justification = "Wrong! %s has no back hook here!" % solution.word.upper()
-        correctExample = []
+            
+        if solution is not None:
+            justification = "Wrong! %s has no back hook here!" % solution.word.upper()
+            correctExample = []
+        else:
+            return generate_back_hook(board, solutions, dictionary)
         
     prompt = prompt % solution.word.upper()
     
     return Question(board, prompt, answers, correct, justification, correctExample) 
 
-def generate_front_hook(board, solutions, dict):
+def generate_front_hook(board, solutions, dictionary):
     is_correct = MathService.get_random_boolean()
     answers = ["Yes", "No"]
     prompt = "Does %s have a valid front hook?"
@@ -98,8 +104,11 @@ def generate_front_hook(board, solutions, dict):
                 continue
             break
         
-        justification = ["Wrong! %s can be made from %s!" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
-        correctExample = ["Correct! e.g. %s can be made from %s" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
+        if solution is not None:
+            justification = ["Wrong! %s can be made from %s!" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
+            correctExample = ["Correct! e.g. %s can be made from %s" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
+        else:
+            return generate_front_hook(board, solutions, dictionary)
     else:
         correct = ["No"]
         for a in solutions:
@@ -112,8 +121,11 @@ def generate_front_hook(board, solutions, dict):
                 solution = a
                 break
         
-        justification = "Wrong! %s has no front hook here!" % solution.word.upper()
-        correctExample = []
+        if solution is not None:
+            justification = "Wrong! %s has no front hook here!" % solution.word.upper()
+            correctExample = []
+        else:
+            return generate_front_hook(board, solutions, dictionary)
         
     prompt = prompt % solution.word.upper()
     
