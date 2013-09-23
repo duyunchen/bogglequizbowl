@@ -45,7 +45,7 @@ def generate_back_hook(board, solutions, dict):
         correct = ["Yes"]
         backhook = None
         for a in solutions:
-            if len(a) < 4:
+            if len(a.word) < 4:
                 continue
             for b in solutions:
                 if len(b.word) == len(a.word) + 1 and b.word[:-1] == a.word:
@@ -61,6 +61,8 @@ def generate_back_hook(board, solutions, dict):
     else:
         correct = ["No"]
         for a in solutions:
+            if len(a.word) < 4:
+                continue
             for b in solutions:
                 if len(b.word) == len(a.word) + 1 and b.word[:-1] == a.word:
                     break
@@ -85,7 +87,7 @@ def generate_front_hook(board, solutions, dict):
         correct = ["Yes"]
         fronthook = None
         for a in solutions:
-            if len(a) < 4:
+            if len(a.word) < 4:
                 continue
             for b in solutions:
                 if len(b.word) == len(a.word) + 1 and b.word[1:] == a.word:
@@ -101,6 +103,8 @@ def generate_front_hook(board, solutions, dict):
     else:
         correct = ["No"]
         for a in solutions:
+            if len(a.word) < 4:
+                continue
             for b in solutions:
                 if len(b.word) == len(a.word) + 1 and b.word[1:] == a.word:
                     break
@@ -125,7 +129,7 @@ def generate_ends_with_suffix(board, solutions, dict):
     prompt = "Is there a word that ends with -%s?"
     
     if is_correct:
-        while len(solution.word) < 3 or solution.word[-3:] in dict:
+        while len(solution.word) < 5 or solution.word[-3:] in dict:
             solution = random.choice(solutions)
         correct = ["Yes"]
         suffix = solution.word[-3:]
@@ -154,7 +158,7 @@ def generate_starts_with_prefix(board, solutions, dict):
     prompt = "Is there a word that starts with %s-?"
     
     if is_correct:
-        while len(solution.word) < 3 or solution.word[0:3] in dict:
+        while len(solution.word) < 5 or solution.word[0:3] in dict:
             solution = random.choice(solutions)
         correct = ["Yes"]
         prefix = solution.word[0:3]
@@ -183,12 +187,14 @@ def generate_is_word_on_board(board, solutions, dict):
     if is_correct:  # Generate a question with "Yes" answer (easy)
         correct = ["Yes"]
         solution = random.choice(solutions)
+        while len(solution.word) < 5:
+            solution = random.choice(solutions)
         justification = ["Wrong! \"%s\" is on this board!" % solution.word.upper(), solution.path]
         correctExample = ["Correct!", solution.path]
     else:  # Generate a question with "No" answer
         word = random.choice(dict);
         
-        while StringService.get_similarity(word, board.letters) < 0.4:
+        while len(word) < 5 or StringService.get_similarity(word, board.letters) < 0.4:
             word = random.choice(dict);
             
         solution = Solution(word)
