@@ -30,7 +30,7 @@ def check_auth(username, password):
     if DEBUG and username==DEBUG_USER and password==DEBUG_PASS:
         return True
     
-    if username=="Guest" and password=="guestpassword":
+    if username=="guest" and password=="guestpassword":
         return True
     
     try:
