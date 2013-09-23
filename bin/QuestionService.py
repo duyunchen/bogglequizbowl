@@ -141,18 +141,28 @@ def generate_ends_with_suffix(board, solutions, dict):
     prompt = "Is there a word that ends with -%s?"
     
     if is_correct:
-        while len(solution.word) < 5 or solution.word[-3:] in dict:
+        maxIter = 100
+        while maxIter > 0 and (len(solution.word) < 5 or solution.word[-3:] in dict):
             solution = random.choice(solutions)
+            maxIter -= 1
+            
+        if maxIter == 0:
+            return generate_question()
+        
         correct = ["Yes"]
         suffix = solution.word[-3:]
         justification = ["Wrong! %s ends with -%s!" % (solution.word.upper(), suffix.upper()), solution.path]
         correctExample = ["Correct! e.g. " + solution.word.upper() + " ends in " + suffix.upper(), solution.path]
     else:
         suffix = board.get_random_word(3)
-        
-        while not _is_cvc(suffix) or _suffix_in_solutions(solutions, suffix):
+        maxIter = 100
+        while maxIter > 0 and (not _is_cvc(suffix) or _suffix_in_solutions(solutions, suffix)):
             suffix = board.get_random_word(3)
+            maxIter -= 1
             
+        if maxIter == 0:
+            return generate_question()
+        
         correct = ["No"]
         justification = "Wrong! No word here ends with -%s!" % suffix.upper()
         correctExample = []
@@ -170,8 +180,12 @@ def generate_starts_with_prefix(board, solutions, dict):
     prompt = "Is there a word that starts with %s-?"
     
     if is_correct:
-        while len(solution.word) < 5 or solution.word[0:3] in dict:
+        maxIter = 100
+        while maxIter > 0 and (len(solution.word) < 5 or solution.word[0:3] in dict):
             solution = random.choice(solutions)
+            maxIter -= 1
+        if maxIter == 0:
+            return generate_question()
         correct = ["Yes"]
         prefix = solution.word[0:3]
         justification = ["Wrong! %s starts with %s-!" % (solution.word.upper(), prefix.upper()), solution.path]
@@ -179,8 +193,12 @@ def generate_starts_with_prefix(board, solutions, dict):
     else:
         prefix = board.get_random_word(3)
         
-        while not _is_cvc(prefix) or _prefix_in_solutions(solutions, prefix):
-            prefix = board.get_random_word(3)
+        maxIter = 100
+        while maxIter > 0 and (not _is_cvc(prefix) or _prefix_in_solutions(solutions, prefix)):
+            suffix = board.get_random_word(3)
+            maxIter -= 1
+        if maxIter == 0:
+            return generate_question()
             
         correct = ["No"]
         justification = "Wrong! No word here starts with %s-!" % prefix.upper()
@@ -199,15 +217,26 @@ def generate_is_word_on_board(board, solutions, dict):
     if is_correct:  # Generate a question with "Yes" answer (easy)
         correct = ["Yes"]
         solution = random.choice(solutions)
-        while len(solution.word) < 5:
+        maxIter = 100
+        while maxIter > 0 and len(solution.word) < 5:
             solution = random.choice(solutions)
+            maxIter -= 1
+        
+        if maxIter == 0:
+            return generate_question()
+        
         justification = ["Wrong! \"%s\" is on this board!" % solution.word.upper(), solution.path]
         correctExample = ["Correct!", solution.path]
     else:  # Generate a question with "No" answer
         word = random.choice(dict);
         
-        while len(word) < 5 or StringService.get_similarity(word, board.letters) < 0.4:
+        maxIter = 100
+        while maxIter > 0 and (len(word) < 5 or StringService.get_similarity(word, board.letters) < 0.4):
             word = random.choice(dict);
+            maxIter -= 1
+        
+        if maxIter == 0:
+            return generate_question()
             
         solution = Solution(word)
         
