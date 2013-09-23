@@ -28,6 +28,7 @@ sys.path.append(os.path.abspath("./bin"))
 
 # Import all our modules
 from Player import Player
+from Board import Board
 import PlayerService
 import LoginService
 import BoardService
@@ -102,12 +103,25 @@ def getQuestion():
     question = QuestionService.generate_question()
     return JsonService.jsonify(question)
     
-# This gets a randomly generated board as JSON
+# This gets a randomly generated board
 @app.route("/getBoard", methods=["GET"])
 def getBoard():
     board = BoardService.generate_board()
-    boardJson = JsonService.jsonify(board)
-    return boardJson
+    return board.letters.upper()
+
+# This gets a randomly generated board
+@app.route("/solveBoard", methods=["GET"])
+def solveBoard():
+    letters = request.args.get("board", None).strip()
+    print type(letters)
+    print len(letters) 
+    if letters is None or type(letters) is not unicode or len(letters) is not 16: 
+        return "Please specific board as a 16 letter GET parameter \"board\""
+    solutions = SolverService.find_words(Board(letters=letters.lower()))
+    wordlist = [solution.word for solution in solutions]
+    wordset = set(wordlist)
+    finallist = "".join(word.upper() + "<br />" for word in wordset)
+    return finallist
 
 # This gets the dictionary
 @app.route("/getDict", methods=["GET"])

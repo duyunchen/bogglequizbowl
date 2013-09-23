@@ -32,7 +32,7 @@ def update_player(player):
     query("UPDATE players SET highscore=? WHERE username=?", [player.highscore, player.username])
     
 def list():
-    result = query("SELECT * FROM players WHERE username != 'debug' AND username != 'Guest' ORDER BY highscore DESC")
+    result = query("SELECT * FROM players WHERE username != 'debug' AND username != 'guest' ORDER BY highscore DESC")
     players = []
     for row in result:
         players.append(Player(row[1], row[2]))
