@@ -62,7 +62,7 @@ def explore(board, positions, trie, words):
     # process current word
     word = board.get_word(positions)
     # check if the word is in the words
-    if len(word) >= 2 and in_trie(trie, word) and word not in words:
+    if len(word) >= 2 and in_trie(trie, word) and not _word_in_solutions(word, words):
         words.append(Solution(word, board.get_indices(positions)))
     # stop if this path is condemned, i.e. no more word possible
     if not prefix_in_trie(trie, word):
@@ -80,6 +80,12 @@ def explore(board, positions, trie, words):
                 npositions = positions + [npos] 
                 # explore the new path 
                 explore(board, npositions, trie, words)
+                
+def _word_in_solutions(word, solutions):
+    for solution in solutions:
+        if solution.word == word:
+            return True
+    return False
                 
 def find_words(board):
     """Return all possible words in a board."""

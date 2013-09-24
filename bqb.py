@@ -113,14 +113,10 @@ def getBoard():
 @app.route("/solveBoard", methods=["GET"])
 def solveBoard():
     letters = request.args.get("board", None).strip()
-    print type(letters)
-    print len(letters) 
     if letters is None or type(letters) is not unicode or len(letters) is not 16: 
         return "Please specific board as a 16 letter GET parameter \"board\""
     solutions = SolverService.find_words(Board(letters=letters.lower()))
-    wordlist = [solution.word for solution in solutions]
-    wordset = set(wordlist)
-    finallist = "".join(word.upper() + "<br />" for word in wordset)
+    finallist = "".join(solution.word.upper() + "<br />" for solution in solutions)
     return finallist
 
 # This gets the dictionary
