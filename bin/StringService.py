@@ -18,5 +18,8 @@
 def get_intersection(str1, str2):
     return set(str1).intersection(set(str2));
 
+def get_intersection_len(str1, str2):
+    return len(get_intersection(str1, str2))
+
 def get_similarity(str1, str2):
     return len(get_intersection(str1, str2))/len(str1)

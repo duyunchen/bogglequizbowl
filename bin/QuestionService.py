@@ -26,14 +26,53 @@ import random
 
 # Generates a question
 def generate_question():
-    board = BoardService.generate_board()
-    solutions = SolverService.find_words(board)
-    dict = FileService.read_dictionary()
-    generate = random.choice([generate_is_word_on_board, generate_starts_with_prefix, generate_ends_with_suffix, generate_front_hook, generate_back_hook])
-    
-    question = generate(board, solutions, dict)
-    
+    #Keep generating till we get a valid question.  Probably not efficient
+    #but keeps it simple.
+    question = None
+    while question is None:
+        board = BoardService.generate_board()
+        solutions = SolverService.find_words(board)
+        dict = FileService.read_dictionary()
+        generate = random.choice([generate_is_word_on_board, generate_starts_with_prefix, generate_ends_with_suffix, generate_front_hook, generate_back_hook, generate_double_consonant])
+        question = generate(board, solutions, dict)
     return question
+
+def generate_double_consonant(board, solutions, dictionary):
+    is_correct = MathService.get_random_boolean()
+    answers = ["Yes", "No"]
+    prompt = "Is there a word that contains %s?"
+    
+    common_dc = ["ll", "nn", "ss", "tt", "dd", "mm","ff", "bb","pp"]
+    valid_dc = []
+    
+    for dc in common_dc:
+        if board.has_word(dc):
+            valid_dc.append(dc)
+    
+    if len(valid_dc) is 0:
+        return None
+    
+    dc_found = None
+    example = None
+    for dc in valid_dc:
+        for s in solutions:
+            if dc in s.word:
+                dc_found = dc
+                example = s
+                break
+                
+    if dc_found:
+        correct = ["Yes"]
+        justification = ["Wrong! %s contains double consonant %s!" % (example.word.upper(), dc.upper()), example.path]
+        correctExample = ["Correct! e.g. %s contains double consonant %s." % (example.word.upper(), dc.upper()), example.path]
+    else:
+        correct = ["No"]
+        justification = "Wrong! No word here contains %s!" % dc.upper()
+        correctExample = []
+        
+    prompt = prompt % dc.upper()
+    
+    return Question(board, prompt, answers, correct, justification, correctExample) 
 
 def generate_back_hook(board, solutions, dictionary):
     is_correct = MathService.get_random_boolean()
@@ -60,7 +99,7 @@ def generate_back_hook(board, solutions, dictionary):
             justification = ["Wrong! %s can be made from %s!" % (backhook.word.upper(), solution.word.upper()), backhook.path]
             correctExample = ["Correct! e.g. %s can be made from %s" % (backhook.word.upper(), solution.word.upper()), backhook.path]
         else:
-            return generate_question()
+            return None
     else:
         correct = ["No"]
         for a in solutions:
@@ -77,7 +116,7 @@ def generate_back_hook(board, solutions, dictionary):
             justification = "Wrong! %s has no back hook here!" % solution.word.upper()
             correctExample = []
         else:
-            return generate_question()
+            return None
         
     prompt = prompt % solution.word.upper()
     
@@ -108,7 +147,7 @@ def generate_front_hook(board, solutions, dictionary):
             justification = ["Wrong! %s can be made from %s!" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
             correctExample = ["Correct! e.g. %s can be made from %s" % (fronthook.word.upper(), solution.word.upper()), fronthook.path]
         else:
-            return generate_question()
+            return None
     else:
         correct = ["No"]
         for a in solutions:
@@ -125,7 +164,7 @@ def generate_front_hook(board, solutions, dictionary):
             justification = "Wrong! %s has no front hook here!" % solution.word.upper()
             correctExample = []
         else:
-            return generate_question()
+            return None
         
     prompt = prompt % solution.word.upper()
     
@@ -147,7 +186,7 @@ def generate_ends_with_suffix(board, solutions, dict):
             maxIter -= 1
             
         if maxIter == 0:
-            return generate_question()
+            return None
         
         correct = ["Yes"]
         suffix = solution.word[-3:]
@@ -161,7 +200,7 @@ def generate_ends_with_suffix(board, solutions, dict):
             maxIter -= 1
             
         if maxIter == 0:
-            return generate_question()
+            return None
         
         correct = ["No"]
         justification = "Wrong! No word here ends with -%s!" % suffix.upper()
@@ -185,7 +224,7 @@ def generate_starts_with_prefix(board, solutions, dict):
             solution = random.choice(solutions)
             maxIter -= 1
         if maxIter == 0:
-            return generate_question()
+            return None
         correct = ["Yes"]
         prefix = solution.word[0:3]
         justification = ["Wrong! %s starts with %s-!" % (solution.word.upper(), prefix.upper()), solution.path]
@@ -198,7 +237,7 @@ def generate_starts_with_prefix(board, solutions, dict):
             suffix = board.get_random_word(3)
             maxIter -= 1
         if maxIter == 0:
-            return generate_question()
+            return None
             
         correct = ["No"]
         justification = "Wrong! No word here starts with %s-!" % prefix.upper()
@@ -207,7 +246,6 @@ def generate_starts_with_prefix(board, solutions, dict):
     prompt = prompt % prefix.upper()
     
     return Question(board, prompt, answers, correct, justification, correctExample)
-    
 def generate_is_word_on_board(board, solutions, dict):
     prompt = "Is %s on this board?"
     answers = ["Yes", "No"]
@@ -223,7 +261,7 @@ def generate_is_word_on_board(board, solutions, dict):
             maxIter -= 1
         
         if maxIter == 0:
-            return generate_question()
+            return None
         
         justification = ["Wrong! \"%s\" is on this board!" % solution.word.upper(), solution.path]
         correctExample = ["Correct!", solution.path]
@@ -236,7 +274,7 @@ def generate_is_word_on_board(board, solutions, dict):
             maxIter -= 1
         
         if maxIter == 0:
-            return generate_question()
+            return None
             
         solution = Solution(word)
         

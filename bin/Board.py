@@ -23,6 +23,7 @@ class Board(object):
         self.letters = letters
         self.width = width
         self.height = height
+        self.neighbors = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1)]
         
     #Get the word corresponding to a path (list of positions).
     def get_word(self, positions):
@@ -43,20 +44,49 @@ class Board(object):
         return self.get_word(self.get_random_path(length))
         
     def get_random_path(self, length = 3):
-        neighbors = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1)]
-        
         path = [(random.randint(0,3), random.randint(0,3))]
         
         for index in xrange(length - 1):
             cur = path[-1]
-            neighbor = random.choice(neighbors);
+            neighbor = random.choice(self.neighbors);
             next = (cur[0] + neighbor[0], cur[1] + neighbor[1]);
             while next in path or not self.is_valid_position(next):
-                neighbor = random.choice(neighbors);
+                neighbor = random.choice(self.neighbors);
                 next = (cur[0] + neighbor[0], cur[1] + neighbor[1]);
             path.append(next)
         
         return path
+    
+    # Returns whether the board contains a certain word
+    def has_word(self, word):
+        if len(word) is 0:
+            return False
+        
+        for row in xrange(self.height): 
+            for column in xrange(self.width):
+                success = self._has_word_helper([(row, column)], word)
+                if success:
+                    return True
+        return False
+                
+    def _has_word_helper(self, path, word):
+        cur = path[-1]
+        letter = self.get_letter(cur[0], cur[1])
+        
+        if len(word) is 0:
+            return True
+        
+        if word[0] != letter:
+            return False
+        
+        for neighbor in self.neighbors:
+            next = (cur[0] + neighbor[0], cur[1] + neighbor[1]);
+            if not self.is_valid_position(next):
+                continue
+            success = self._has_word_helper(path + [next], word[1:])
+            if success:
+                return True
+        return False
         
     def is_valid_position(self, position):
         row = position[0]
