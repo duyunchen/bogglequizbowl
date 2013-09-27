@@ -51,7 +51,7 @@ class Board(object):
             cur = path[-1]
             neighbor = random.choice(neighbors);
             next = (cur[0] + neighbor[0], cur[1] + neighbor[1]);
-            while not self.is_valid_position(next):
+            while next in path or not self.is_valid_position(next):
                 neighbor = random.choice(neighbors);
                 next = (cur[0] + neighbor[0], cur[1] + neighbor[1]);
             path.append(next)
