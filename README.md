@@ -11,11 +11,12 @@ Technologies used:
 HTML, CSS, Javascript, JQuery, Backbone.js, Foundation, Python, Flask, SQLite
 
 This is an independent project to practice basic full stack web development. 
-I learned a lot just by scouring the interwebs for information!  A lot of the 
+I learned most of this myself by scouring the interwebs for information!  A lot of the 
 code may not be up to professional coding standards since I had to piece 
 together a lot of tutorials and proof-of-concept shenanigans from Stack Overflow. 
-I will work on  cleaning up this code for maximal maintability and hopefully add 
+I will work on  cleaning up this code for maximal maintainability and hopefully add 
 a testing framework. Flask has some nice tools for that. Coding is fun!  
+
 Polishing the code is less fun but satisfying in another way.
 
 For a demo please visit http://bqb.duyunchen.com.
